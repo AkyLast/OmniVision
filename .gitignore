@@ -1,0 +1,6 @@
+.env
+.venv
+
+/data/roboflow/*
+/data/raw/*
+/data/processed/*
