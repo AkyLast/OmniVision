@@ -17,8 +17,7 @@ def config_workers():
     except ImportError:
         physical_cores = "Não disponível (instale psutil)"
 
-    # Número de CPUs lógicas (threads)
-    logical_cores = os.cpu_count()  # ou multiprocessing.cpu_count()
+    logical_cores = os.cpu_count()  
 
     config = {
         "cores_fisics": physical_cores,
@@ -26,5 +25,3 @@ def config_workers():
     }
 
     return config
-
-print(config_workers())

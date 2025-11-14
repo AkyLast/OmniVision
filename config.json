@@ -1,0 +1,13 @@
+{
+    "datasets_config": {
+        "roboflow_workspace": "projturi",
+        "roboflow_dataset_name": "structural-validation-wj8gc",
+        "dataset_version": 1,
+        "download_format_model": "yolov8"
+    },
+
+    "model_config": {
+        "dataset_path": "data/raw/structural-validation-1",
+        "model_base": "yolov8n-seg.pt"
+    }
+}
