@@ -8,33 +8,55 @@ with open("config.json", "r", encoding="utf-8") as file:
     CONFIG = json.load(file)
 
 MODEL_CONFIG = CONFIG["model_config"]
-PROJECT_DIR = "experiments"
-EXPERIMENT_NAME = "structral_v0"
+PROJECT_DIR = MODEL_CONFIG["PROJECT_DIR"]
+count = len(os.listdir(PROJECT_DIR))
+num = f"0{count}" if count < 10 else count
+EXPERIMENT_NAME = f'{MODEL_CONFIG["model_train"]["experimentations"]}{num}'
 
 gpu = config_gpu()
-
+workers = config_workers()
 device = "cuda" if gpu["cuda_status"] else "cpu"
-print(f"Usando dispositivo: {device}")
 
-# --- 2. Caminhos dos dados ---
-data_yaml = f"{MODEL_CONFIG["dataset_path"]}/data.yaml"
+data_yaml = f'{MODEL_CONFIG["dataset_path"]}/data.yaml'
+model_usage = f'models/pretrained/{MODEL_CONFIG["model_base"]}'
 
-# --- 3. Carregar modelo base ---
-model = YOLO(f"models/pretrained/{MODEL_CONFIG["model_base"]}") 
+mensagem = f"""
+    -=- Resumo da Configuração -=-
+-------------------------------------
+Caminho do data.yaml:           {data_yaml.split('/')[-2]}
+Modelo base a ser utilizado:    {model_usage.split('/')[-1]}
+Projeto:                        {PROJECT_DIR}
+Total de itens na pasta:        {num}
+Nome da experimentação:         {EXPERIMENT_NAME}
 
-# --- 4. Treinar ---
-results = model.train(
-    data=data_yaml,     
-    epochs=10,          
-    imgsz=640,         
-    batch=8,            
-    device=device,      
-    project=PROJECT_DIR,  
-    name=EXPERIMENT_NAME,  
-)
+--- GPU ---
+CUDA disponível:                {gpu["cuda_status"]}
+Versão CUDA:                    {gpu["cuda_version"]}
+GPU detectada:                  {gpu["gpu"]}
 
-# --- 5. Validar ---
-#metrics = model.val()  # avalia automaticamente o modelo final
-#print("Métricas de validação:", metrics)
+--- CPU / Workers ---
+Cores físicos:                  {workers["cores_fisics"]}
+Cores lógicos:                  {workers["cores_logics"]}
 
-# --- 6. Inferência de teste ---
+--- Dispositivo ---
+Dispositivo em uso:             {device}
+-------------------------------------
+"""
+
+print(mensagem)
+
+
+model = YOLO(model_usage) 
+BATCH = MODEL_CONFIG["model_train"]["batch"]
+IMGSZ = MODEL_CONFIG["model_train"]["imgsz"]
+
+if __name__ == "__main__":
+    results = model.train(
+        data=data_yaml,     
+        epochs=1,          
+        imgsz=IMGSZ,         
+        batch=BATCH,            
+        device=device,      
+        project=PROJECT_DIR,  
+        name=EXPERIMENT_NAME,  
+    )

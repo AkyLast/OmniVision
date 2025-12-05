@@ -8,6 +8,12 @@
 
     "model_config": {
         "dataset_path": "data/raw/structural-validation-1",
-        "model_base": "yolov8n-seg.pt"
+        "model_base": "yolov8n-seg.pt",
+        "PROJECT_DIR": "experiments",
+        "model_train":{
+            "batch": 16,
+            "imgsz": 640,
+            "experimentations": "run_"
+        }
     }
 }
